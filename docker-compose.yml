@@ -1,12 +1,12 @@
 services:
   postgres:
     image: postgres:15
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: shopdb
-    ports:
-      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -17,8 +17,20 @@ services:
       - "3000:3000"
     depends_on:
       - postgres
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./nestshop-frontend:/app
     environment:
-      DATABASE_URL: postgres://postgres:postgres@postgres:5432/shopdb
+      - VITE_API_BASE_URL=http://localhost:3000
 
 volumes:
   pgdata:
