@@ -19,7 +19,7 @@ dist-ssr/
 out/
 
 # Environment files
-.env
+# .env
 .env.local
 .env.*.local
 
