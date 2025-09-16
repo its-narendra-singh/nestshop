@@ -9,6 +9,8 @@ services:
       POSTGRES_DB: shopdb
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
 
   backend:
     build:
@@ -19,6 +21,10 @@ services:
       - postgres
     env_file:
       - ./backend/.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/shopdb
+    networks:
+      - app-network
 
   frontend:
     build:
@@ -27,10 +33,14 @@ services:
       - "5173:5173"
     depends_on:
       - backend
-    volumes:
-      - ./frontend:/app
     environment:
       - VITE_API_BASE_URL=http://localhost:3000
+    networks:
+      - app-network
 
 volumes:
   pgdata:
+
+networks:
+  app-network:
+    driver: bridge

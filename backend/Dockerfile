@@ -4,12 +4,26 @@ FROM node:18
 
 WORKDIR /app
 
+# Install netcat for health checks
+RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/lists/*
+
+# Copy package files first for better caching
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source code
 COPY . .
 
-RUN npm install
-RUN npm install -g ts-node
-
-# Optional: generate Prisma client
+# Generate Prisma client
 RUN npx prisma generate
 
-CMD ["npm", "run", "start:dev"]
+# Make the entrypoint script executable
+RUN chmod +x docker-entrypoint.sh
+
+# Expose port
+EXPOSE 3000
+
+# Use the entrypoint script
+CMD ["./docker-entrypoint.sh"]
