@@ -1,29 +1,19 @@
-import {
-    Typography,
-    List,
-    ListItem,
-    ListItemText,
-    IconButton,
-    CircularProgress,
-    Card,
-    CardContent,
-    Avatar,
-    Box,
-    Divider,
-    Button,
-} from '@mui/material';
+import { Typography, List, ListItem, ListItemText, IconButton, Card, CardContent, Avatar, Box, Divider, Button } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useGetCartQuery, useRemoveFromCartMutation } from '../features/cart/cartApi';
+import { useGetCartQuery, useRemoveFromCartMutation } from '../../features/cart/cartApi';
 import { useSelector } from 'react-redux';
-import { selectCartSummary } from '../features/cart/cartSlice';
+import { selectCartSummary } from '../../features/cart/cartSlice';
+import { PageGrid, SummaryCard } from './styles';
+import LoadingSpinner from '../../components/LoadingSpinner';
+import ErrorState from '../../components/ErrorState';
 
 const CartPage = () => {
     const { isLoading, isError } = useGetCartQuery();
     const data = useSelector(selectCartSummary);
     const [removeFromCart] = useRemoveFromCartMutation();
 
-    if (isLoading) return <CircularProgress />;
-    if (isError || !data) return <Typography color="error">Failed to load cart.</Typography>;
+    if (isLoading) return <LoadingSpinner />;
+    if (isError || !data) return <ErrorState title="Failed to load cart" />;
 
     if (data.items.length === 0) {
         return (
@@ -35,7 +25,7 @@ const CartPage = () => {
     }
 
     return (
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 1fr' }, gap: 3, mt: 1 }}>
+        <PageGrid>
             <Card>
                 <CardContent>
                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 700 }}>Your Cart</Typography>
@@ -63,7 +53,7 @@ const CartPage = () => {
                     </List>
                 </CardContent>
             </Card>
-            <Card sx={{ height: 'fit-content' }}>
+            <SummaryCard>
                 <CardContent>
                     <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 700 }}>Summary</Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
@@ -76,9 +66,11 @@ const CartPage = () => {
                     </Box>
                     <Button variant="contained" color="primary" fullWidth disabled={data.totalItems === 0}>Checkout</Button>
                 </CardContent>
-            </Card>
-        </Box>
+            </SummaryCard>
+        </PageGrid>
     );
 };
 
 export default CartPage;
+
+

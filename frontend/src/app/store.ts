@@ -1,4 +1,3 @@
-// src/app/store.ts
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { productApi } from '../features/products/productApi';
 import { cartApi } from '../features/cart/cartApi';

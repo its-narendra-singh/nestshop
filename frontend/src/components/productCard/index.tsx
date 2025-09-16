@@ -1,11 +1,12 @@
-import { Card, CardContent, CardMedia, Typography, Button, Box, IconButton, Chip } from '@mui/material';
+import { CardContent, CardMedia, Typography, Box } from '@mui/material';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import type { Product } from '../features/products/types';
-import { useRemoveFromCartMutation, useSetCartItemQuantityMutation } from '../features/cart/cartApi';
+import type { Product } from '../../features/products/types';
+import { useRemoveFromCartMutation, useSetCartItemQuantityMutation } from '../../features/cart/cartApi';
 import { useSelector } from 'react-redux';
-import { selectCartSummary } from '../features/cart/cartSlice';
+import { selectCartSummary } from '../../features/cart/cartSlice';
+import { RootCard, MediaBox, OverlayIconButton, NewChip, QtyButton, QtyDisplay } from './styles';
 
 interface Props {
     product: Product;
@@ -37,26 +38,8 @@ const ProductCard = ({ product }: Props) => {
     };
 
     return (
-        <Card
-            sx={{
-                width: '100%',
-                maxWidth: 320,
-                height: 420,
-                display: 'flex',
-                flexDirection: 'column',
-                borderRadius: 1.5,
-                border: '1px solid rgba(255,255,255,0.08)',
-                boxShadow: '0 6px 18px rgba(0,0,0,0.35)',
-                backgroundColor: 'background.paper',
-                transition: 'transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease',
-                '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 10px 24px rgba(0,0,0,0.45)',
-                    borderColor: 'rgba(255,255,255,0.14)'
-                }
-            }}
-        >
-            <Box sx={{ position: 'relative', height: 220, overflow: 'hidden', borderTopLeftRadius: 6, borderTopRightRadius: 6 }}>
+        <RootCard>
+            <MediaBox>
                 <CardMedia
                     component="img"
                     height="220"
@@ -64,19 +47,11 @@ const ProductCard = ({ product }: Props) => {
                     alt={product.name}
                     sx={{ objectFit: 'cover', filter: 'saturate(1.05)' }}
                 />
-                <IconButton
-                    size="small"
-                    sx={{ position: 'absolute', top: 8, right: 8, bgcolor: 'rgba(0,0,0,0.35)', color: 'common.white', '&:hover': { bgcolor: 'rgba(0,0,0,0.55)' } }}
-                >
+                <OverlayIconButton size="small">
                     <FavoriteBorderIcon fontSize="small" />
-                </IconButton>
-                <Chip
-                    color="secondary"
-                    size="small"
-                    label="New"
-                    sx={{ position: 'absolute', top: 8, left: 8, fontWeight: 700, borderRadius: 1 }}
-                />
-            </Box>
+                </OverlayIconButton>
+                <NewChip color="secondary" size="small" label="New" />
+            </MediaBox>
             <CardContent sx={{ display: 'flex', flexDirection: 'column', gap: 1, flexGrow: 1 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 700 }} noWrap>
                     {product.name}
@@ -87,53 +62,42 @@ const ProductCard = ({ product }: Props) => {
                 <Box sx={{ flexGrow: 1 }} />
                 {quantity > 0 ? (
                     <Box sx={{ display: 'flex', gap: 1, width: '100%' }}>
-                        <Button
+                        <QtyButton
                             onClick={handleDecrement}
                             aria-label="decrease"
                             variant="outlined"
                             color="primary"
-                            sx={{ borderRadius: 1, minWidth: 48, flex: '0 0 auto' }}
                         >
                             <RemoveIcon />
-                        </Button>
-                        <Button
+                        </QtyButton>
+                        <QtyDisplay
                             disabled
                             variant="outlined"
-                            sx={{
-                                borderRadius: 1,
-                                minWidth: 64,
-                                flex: '1 1 auto',
-                                pointerEvents: 'none',
-                                color: 'text.primary',
-                                fontWeight: 700
-                            }}
                         >
                             {quantity}
-                        </Button>
-                        <Button
+                        </QtyDisplay>
+                        <QtyButton
                             onClick={handleIncrement}
                             aria-label="increase"
                             variant="outlined"
                             color="primary"
-                            sx={{ borderRadius: 1, minWidth: 48, flex: '0 0 auto' }}
                         >
                             <AddIcon />
-                        </Button>
+                        </QtyButton>
                     </Box>
                 ) : (
-                    <Button
+                    <QtyButton
                         size="medium"
                         variant="contained"
                         fullWidth
                         onClick={handleAdd}
                         disabled={isLoading}
-                        sx={{ borderRadius: 1 }}
                     >
                         {isLoading ? 'Adding…' : 'Add to Cart'}
-                    </Button>
+                    </QtyButton>
                 )}
             </CardContent>
-        </Card>
+        </RootCard>
     );
 };
 
