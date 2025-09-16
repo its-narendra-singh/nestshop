@@ -28,7 +28,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./nestshop-frontend:/app
+      - ./frontend:/app
     environment:
       - VITE_API_BASE_URL=http://localhost:3000
 
