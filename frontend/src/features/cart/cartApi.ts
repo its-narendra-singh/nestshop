@@ -1,16 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { CartSummary } from './types';
 
+const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:3000';
+
 export const cartApi = createApi({
     reducerPath: 'cartApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:3000' }),
+    baseQuery: fetchBaseQuery({ baseUrl: API_BASE_URL }),
     tagTypes: ['Cart'],
     endpoints: builder => ({
         getCart: builder.query<CartSummary, void>({
             query: () => '/cart',
             providesTags: ['Cart'],
         }),
-        addToCart: builder.mutation<void, { productId: string; quantity: number }>({
+        setCartItemQuantity: builder.mutation<void, { productId: string; quantity: number }>({
             query: body => ({
                 url: '/cart',
                 method: 'POST',
@@ -30,6 +32,6 @@ export const cartApi = createApi({
 
 export const {
     useGetCartQuery,
-    useAddToCartMutation,
+    useSetCartItemQuantityMutation,
     useRemoveFromCartMutation,
 } = cartApi;
