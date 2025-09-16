@@ -87,8 +87,6 @@ Frontend should be available at the Vite dev server URL printed in the terminal 
 - For local dev: you may comment out `backend` and `frontend` services in `docker-compose.yml` and only run `postgres`.
 - For full Docker runs: uncomment `backend` and `frontend` services and run `docker compose up --build`.
 
-Before pushing/sharing the final solution, ensure Compose is set back to run all services if that’s the expected deployment mode.
-
 ---
 
 ## Project Structure
