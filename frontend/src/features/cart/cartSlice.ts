@@ -1,39 +1,45 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import type { CartSummary, CartItem as ApiCartItem } from './types';
 
-interface CartItem {
-    productId: string;
-    quantity: number;
-}
+// Use API cart item shape in state so UI can render details
+type CartItem = ApiCartItem;
 
 interface CartState {
     items: CartItem[];
+    totalItems: number;
+    totalPrice: number;
 }
 
 const initialState: CartState = {
     items: [],
+    totalItems: 0,
+    totalPrice: 0,
 };
 
 const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        addToCart(state, action: PayloadAction<{ productId: string; quantity?: number }>) {
-            const existing = state.items.find(item => item.productId === action.payload.productId);
-            if (existing) {
-                existing.quantity += action.payload.quantity ?? 1;
-            } else {
-                state.items.push({ productId: action.payload.productId, quantity: action.payload.quantity ?? 1 });
-            }
-        },
-        removeFromCart(state, action: PayloadAction<string>) {
-            state.items = state.items.filter(item => item.productId !== action.payload);
-        },
         clearCart(state) {
             state.items = [];
+            state.totalItems = 0;
+            state.totalPrice = 0;
         },
+        setCartSummary(state, action: PayloadAction<CartSummary>) {
+            state.items = action.payload.items;
+            state.totalItems = action.payload.totalItems;
+            state.totalPrice = action.payload.totalPrice;
+        }
     },
 });
 
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const { clearCart, setCartSummary } = cartSlice.actions;
 export default cartSlice.reducer;
+
+// Selectors
+export const selectCartSummary = (state: { cart: CartState }) => ({
+    items: state.cart.items,
+    totalItems: state.cart.totalItems,
+    totalPrice: state.cart.totalPrice,
+});

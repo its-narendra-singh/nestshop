@@ -3,14 +3,16 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import type { Product } from '../features/products/types';
-import { useGetCartQuery, useRemoveFromCartMutation, useSetCartItemQuantityMutation } from '../features/cart/cartApi';
+import { useRemoveFromCartMutation, useSetCartItemQuantityMutation } from '../features/cart/cartApi';
+import { useSelector } from 'react-redux';
+import { selectCartSummary } from '../features/cart/cartSlice';
 
 interface Props {
     product: Product;
 }
 
 const ProductCard = ({ product }: Props) => {
-    const { data: cart } = useGetCartQuery();
+    const cart = useSelector(selectCartSummary);
     const [setQuantity, { isLoading }] = useSetCartItemQuantityMutation();
     const [removeFromCart] = useRemoveFromCartMutation();
 

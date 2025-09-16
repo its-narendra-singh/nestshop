@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { CartSummary } from './types';
+import { setCartSummary } from './cartSlice';
 
 const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'http://localhost:3000';
 
@@ -11,6 +12,12 @@ export const cartApi = createApi({
         getCart: builder.query<CartSummary, void>({
             query: () => '/cart',
             providesTags: ['Cart'],
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(setCartSummary(data));
+                } catch {}
+            },
         }),
         setCartItemQuantity: builder.mutation<void, { productId: string; quantity: number }>({
             query: body => ({

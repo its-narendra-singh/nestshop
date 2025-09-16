@@ -3,9 +3,15 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useMemo, useState } from 'react';
 import ProductCard from '../components/ProductCard';
 import { useGetProductsQuery } from '../features/products/productApi';
+import { useGetCartQuery } from '../features/cart/cartApi';
+import { useSelector } from 'react-redux';
+import { selectProducts } from '../features/products/productSlice';
 
 const ProductsPage = () => {
-    const { data: products, isLoading, isError } = useGetProductsQuery();
+    const { isLoading, isError } = useGetProductsQuery();
+    // Hydrate cart slice so ProductCard selectors have data
+    useGetCartQuery();
+    const products = useSelector(selectProducts);
     const [query, setQuery] = useState('');
     const filtered = useMemo(() => (products ?? []).filter(p => p.name.toLowerCase().includes(query.toLowerCase())), [products, query]);
 

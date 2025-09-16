@@ -13,13 +13,13 @@ import {
     Button,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {
-    useGetCartQuery,
-    useRemoveFromCartMutation,
-} from '../features/cart/cartApi';
+import { useGetCartQuery, useRemoveFromCartMutation } from '../features/cart/cartApi';
+import { useSelector } from 'react-redux';
+import { selectCartSummary } from '../features/cart/cartSlice';
 
 const CartPage = () => {
-    const { data, isLoading, isError } = useGetCartQuery();
+    const { isLoading, isError } = useGetCartQuery();
+    const data = useSelector(selectCartSummary);
     const [removeFromCart] = useRemoveFromCartMutation();
 
     if (isLoading) return <CircularProgress />;
