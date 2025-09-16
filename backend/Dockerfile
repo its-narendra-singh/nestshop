@@ -19,11 +19,11 @@ COPY . .
 # Generate Prisma client
 RUN npx prisma generate
 
-# Make the entrypoint script executable
-RUN chmod +x docker-entrypoint.sh
+# Normalize line endings and make entrypoint executable (fixes Windows CRLF issues)
+RUN sed -i 's/\r$//' docker-entrypoint.sh && chmod +x docker-entrypoint.sh
 
 # Expose port
 EXPOSE 3000
 
-# Use the entrypoint script
-CMD ["./docker-entrypoint.sh"]
+# Use the entrypoint script via sh to avoid exec path issues
+CMD ["sh", "./docker-entrypoint.sh"]
